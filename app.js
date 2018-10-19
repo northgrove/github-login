@@ -2,9 +2,10 @@ const express = require('express')
 const router = express.Router()
 const logger = require('morgan')
 const bodyParser = require('body-parser')
+const session = require('cookie-session')
 const token = require('./getToken')
 
-//var aad = require('azure-ad-jwt');
+
 
 const app = express()
 app.use(logger('dev'))
@@ -24,6 +25,13 @@ app.use(cors)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 // app.use('/', router)
+
+app.use(
+  session({
+    name: 'github',
+    keys: ['key1', 'key2']
+  })
+)
 
 // ERROR HANDLING
 app.use((err, req, res, next) => {
@@ -47,6 +55,8 @@ try {
 
 app.get('/auth', token.getCode())
 app.get('/callback', token.getToken())
+app.get('/user', token.getUser())
+app.get('/repos', token.getRepos())
 //app.post('/callback', (req, res) => { token.getToken(req.query.code)})        
 
 

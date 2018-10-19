@@ -2,13 +2,14 @@ const request = require('request-promise')
 const config = require('./config/githubConfig')
 let ms_access_token = ''
 let token = ''
+let body = ''
 
 exports.getCode = async (tokenURI) => {
   let parameters = ''
   try {
     parameters = {
       client_id: config.clientID,
-      scope: 'user',
+      scope: 'user repos',
       redirect_uri: config.redirectUrl,
       state: '123456789',
       client_secret: config.clientSecret
@@ -31,6 +32,37 @@ exports.getCode = async (tokenURI) => {
     return e
   }
 }
+
+exports.getAPI = async (apiURI, accessToken) => {
+  let parameters = ''
+  try {
+    console.log(apiURI, accessToken )
+
+    await request.get({
+      headers: { 
+        'User-Agent': 'nav-login',
+        'Authorization':'token ' + accessToken
+     },
+      url: apiURI,
+     // auth: { token: accessToken }
+    }, function callback(
+      err,
+      httpResponse,
+      body
+    ) {
+      ms_access_token = JSON.parse(body)
+
+      //console.log('access token: ', ms_access_token)
+      //console.log('response: ', body)
+      return ms_access_token
+    })
+    return ms_access_token
+  } catch (e) {
+    //console.error('Could not get access_token', e)
+    return e
+  }
+}
+
 
 exports.getAccessToken = async (tokenURI, code) => {
     let parameters = ''
