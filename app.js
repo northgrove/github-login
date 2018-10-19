@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const logger = require('morgan')
 const bodyParser = require('body-parser')
-const token = require('./auth-getToken')
+const token = require('./getToken')
 
 //var aad = require('azure-ad-jwt');
 
@@ -37,7 +37,7 @@ app.use((err, req, res, next) => {
 const host = 'localhost'
 const port = 5050
 try {
-  console.log(`Starting Basta AAD Auth backend`)
+  console.log(`Starting github getToken app`)
   app.listen(port, () => {
     console.log(`Done. I am listening on ${host}:${port}`)
   })
@@ -45,6 +45,10 @@ try {
   throw new Error('Error starting express server:', err)
 }
 
-app.get('/auth', token.getToken())
+app.get('/auth', token.getCode())
+app.get('/callback', token.getToken())
+//app.post('/callback', (req, res) => { token.getToken(req.query.code)})        
+
+
 
 module.exports = app
