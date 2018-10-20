@@ -1,9 +1,8 @@
 const express = require('express')
-const router = express.Router()
 const logger = require('morgan')
 const bodyParser = require('body-parser')
 const session = require('cookie-session')
-const token = require('./getToken')
+const doRequests = require('./doRequests')
 
 
 
@@ -53,10 +52,10 @@ try {
   throw new Error('Error starting express server:', err)
 }
 
-app.get('/auth', token.getCode())
-app.get('/callback', token.getToken())
-app.get('/user', token.getUser())
-app.get('/repos', token.getRepos())
+app.get('/auth', doRequests.getCode())
+app.get('/callback', doRequests.getToken())
+app.get('/user', doRequests.getUser())
+app.get('/repos', doRequests.getRepos())
 //app.post('/callback', (req, res) => { token.getToken(req.query.code)})        
 
 
